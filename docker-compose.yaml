@@ -9,7 +9,7 @@ services:
     ports:
       - 3000:3000
     environment:
-      - DB_CONN_STRING="mongodb://db:27017"
+      - MONGO_URI="mongodb://citizix:S3cret@db:27017"
     env_file:
       - .env
 
@@ -23,6 +23,7 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=citizix
       - MONGO_INITDB_ROOT_PASSWORD=S3cret
+      - MONGO_REPLICA_HOST=0.0.0.0
   
   mongo-express:
     image: mongo-express
