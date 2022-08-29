@@ -5,6 +5,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DockerImagesModule } from './docker-images/docker-images.module';
 import { DeploymentsModule } from './deployments/deployments.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -20,7 +22,7 @@ import { DeploymentsModule } from './deployments/deployments.module';
         uri: config.get<string>('MONGO_URI'),
         dbName: config.get<string>('DB_NAME'),
     })
-  }), DeploymentsModule],
+  }), DeploymentsModule, AuthModule, UsersModule],
   controllers: [AppController],
   providers: [AppService],
 })
