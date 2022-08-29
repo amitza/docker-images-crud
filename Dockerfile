@@ -1,22 +1,36 @@
-FROM node:14-alpine3.10 as ts-compiler
-WORKDIR /usr/app
-COPY package*.json ./
-COPY tsconfig*.json ./
-RUN npm install
-COPY . ./
+FROM node:18-alpine As development
+
+WORKDIR /usr/src/app
+
+COPY --chown=node:node package*.json ./
+
+RUN npm ci
+
+COPY --chown=node:node . .
+
+USER node
+
+FROM node:18-alpine As build
+
+WORKDIR /usr/src/app
+
+COPY --chown=node:node package*.json ./
+
+COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
+
+COPY --chown=node:node . .
+
 RUN npm run build
 
-FROM node:14-alpine3.10 as ts-remover
-WORKDIR /usr/app
-COPY --from=ts-compiler /usr/app/package*.json ./
-COPY --from=ts-compiler /usr/app/build ./
-RUN npm install --only=production
+ENV NODE_ENV production
 
-FROM gcr.io/distroless/nodejs:14
-WORKDIR /usr/app
-COPY --from=ts-remover /usr/app ./
-USER 1000
+RUN npm ci --only=production && npm cache clean --force
 
-EXPOSE 3000
+USER node
 
-CMD ["server.js"]
+FROM node:18-alpine As production
+
+COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
+COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+
+CMD [ "node", "dist/main.js" ]
