@@ -1,3 +1,4 @@
+import { CollectionDto, CollectionResponse, DocumentCollector } from '@forlagshuset/nestjs-mongoose-paginate';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -26,8 +27,9 @@ export class DeploymentsService {
     return deployemnt;
   }
 
-  async findAll() {
-    return `This action returns all deployments`;
+  async findAll(collectionDto: CollectionDto): Promise<CollectionResponse<DeploymentDocument>> {
+    const collector = new DocumentCollector<DeploymentDocument>(this.deploymentModel);
+    return collector.find(collectionDto);
   }
 
   async count(): Promise<Number>{
