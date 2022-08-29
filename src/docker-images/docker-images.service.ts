@@ -37,15 +37,23 @@ export class DockerImagesService {
     return k_combinations(dockerImagesNames, length);;
   }
 
-  async update(id: string, updateDockerImageDto: UpdateDockerImageDto): Promise<DockerImage> {
-      const originalImage = await this.dockerImageModel.findById(id);
-
-      updateDockerImageDto.updatedAt = new Date();
-
-      Object.assign(originalImage.metadata, updateDockerImageDto.metadata);
-
-      const newDockerImage = new this.dockerImageModel(updateDockerImageDto);
-
-      return await newDockerImage.save();
+  async update(id: string, updateDockerImageDto: UpdateDockerImageDto) : Promise<DockerImage> {
+      return await this.dockerImageModel.findOneAndUpdate({ _id: id }, 
+        [{
+          $set: {
+            "name": updateDockerImageDto.name,
+            "version": updateDockerImageDto.version,
+            "repository": updateDockerImageDto.repository,
+            "createdAt": updateDockerImageDto.createdAt,
+            "updatedAt": new Date(),
+            "metadata": {
+                    "$mergeObjects": [
+                      "$metadata", updateDockerImageDto.metadata
+                    ]
+                  }
+          }}
+        ], {
+          new: true
+        });
   }
 }

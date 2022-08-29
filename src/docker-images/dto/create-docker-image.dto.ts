@@ -8,8 +8,9 @@ export class CreateDockerImageDto {
     @IsString()
     version: string;
 
+    @IsString()
     @IsLowercase()
-    repositopry: string;
+    repository: string;
 
     @IsObject()
     metadata: object;
