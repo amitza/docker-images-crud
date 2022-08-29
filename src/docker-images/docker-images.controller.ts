@@ -1,7 +1,9 @@
+import { CollectionDto, ValidationPipe } from '@forlagshuset/nestjs-mongoose-paginate';
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpCode, HttpStatus } from '@nestjs/common';
 import { DockerImagesService } from './docker-images.service';
 import { CreateDockerImageDto } from './dto/create-docker-image.dto';
 import { UpdateDockerImageDto } from './dto/update-docker-image.dto';
+import { DockerImagesCollectionProperties } from './entities/docker-images.collection';
 
 @Controller('docker-images')
 export class DockerImagesController {
@@ -15,8 +17,8 @@ export class DockerImagesController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll(@Query('pageNumber') pageNumber, @Query('limit') limit) {
-    return this.dockerImagesService.findAll(pageNumber, limit);
+  findAll(@Query(new ValidationPipe(DockerImagesCollectionProperties)) collectionDto: CollectionDto) {
+    return this.dockerImagesService.findAll(collectionDto);
   }
 
   @Get('combinations/:length')
