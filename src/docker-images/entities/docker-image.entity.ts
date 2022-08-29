@@ -5,9 +5,6 @@ export type DockerImageDocument = DockerImage & Document;
 
 @Schema()
 export class DockerImage {
-  
-  @Prop({ type: mongoose.Schema.Types.ObjectId })
-  id: string;
 
   @Prop({ type: String, required: true, unique: true, lowercase: true })
   name: string;
