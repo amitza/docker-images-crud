@@ -13,18 +13,18 @@ export class DeploymentsService {
     private deploymentModel: Model<DeploymentDocument>
   ) {}
 
-  async create(createDeploymentDto: CreateDeploymentDto): Promise<Deployment> {
+  async create(createDeploymentDto: CreateDeploymentDto, countFileName: string): Promise<Deployment> {
     const deployemnt = new this.deploymentModel(createDeploymentDto);
 
-    const count = Number(await readFile('count.txt', 'utf8'));
+    const count = Number(await readFile(countFileName, 'utf8'));
     
     var writeFileAtomic = require('write-file-atomic')
 
-    await writeFileAtomic('count.txt', count + 1);
+    await writeFileAtomic(countFileName, count + 1);
 
     deployemnt.createdAt = new Date();
 
-    return deployemnt;
+    return await deployemnt.save();
   }
 
   async findAll(collectionDto: CollectionDto): Promise<CollectionResponse<DeploymentDocument>> {
@@ -32,7 +32,7 @@ export class DeploymentsService {
     return collector.find(collectionDto);
   }
 
-  async count(): Promise<Number>{
-    return Number(await readFile('count.txt', 'utf8'));
+  async count(countFileName: string): Promise<Number>{
+    return Number(await readFile(countFileName, 'utf8'));
   }
 }

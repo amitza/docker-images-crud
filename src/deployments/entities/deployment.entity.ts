@@ -7,7 +7,7 @@ export type DeploymentDocument = Deployment & Document;
 export class Deployment {
   
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'DockerImage' })
-  imageId: string;
+  imageId: mongoose.Schema.Types.ObjectId;
 
   @Prop({ type: Date })
   createdAt: Date;

@@ -1,16 +1,18 @@
 import { CollectionDto, ValidationPipe } from '@forlagshuset/nestjs-mongoose-paginate';
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Query, HttpStatus } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { DeploymentsService } from './deployments.service';
 import { CreateDeploymentDto } from './dto/create-deployment.dto';
 import { DeploymentsCollectionProperties } from './entities/deployment.collection';
 
 @Controller('deployments')
 export class DeploymentsController {
-  constructor(private readonly deploymentsService: DeploymentsService) {}
+  constructor(private readonly deploymentsService: DeploymentsService,
+    private readonly configService: ConfigService) {}
 
   @Post()
   create(@Body() createDeploymentDto: CreateDeploymentDto) {
-    return this.deploymentsService.create(createDeploymentDto);
+    return this.deploymentsService.create(createDeploymentDto, this.configService.get<string>('COUNT_FILE_NAME'));
   }
 
   @Get()
@@ -21,6 +23,6 @@ export class DeploymentsController {
 
   @Get('count')
   count() {
-    return this.deploymentsService.count();
+    return this.deploymentsService.count(this.configService.get<string>('COUNT_FILE_NAME'));
   }
 }
