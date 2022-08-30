@@ -9,11 +9,12 @@ services:
     ports:
       - 3000:3000
     environment:
-      - MONGO_URI="mongodb://citizix:S3cret@db:27017"
+      MONGO_URI: "mongodb://citizix:S3cret@db:27017"
     env_file:
       - .env
 
   db:
+    container_name: db
     image: mongo:6.0.1-focal
     ports:
       - 27017:27017
@@ -22,8 +23,8 @@ services:
     restart: always
     command: mongod --port 27017 --bind_ip_all
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=citizix
-      - MONGO_INITDB_ROOT_PASSWORD=S3cret
+      MONGO_INITDB_ROOT_USERNAME: citizix
+      MONGO_INITDB_ROOT_PASSWORD: S3cret
   
   mongo-express:
     image: mongo-express
